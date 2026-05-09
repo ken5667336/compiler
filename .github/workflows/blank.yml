@@ -11,6 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Clone repo
         run: |
@@ -40,6 +43,8 @@ jobs:
           mkdir -p dist
           cp rpow_cli_miner/rpow-native-miner dist/rpow-native-miner
           cp rpow_cli_miner/rpow-cli.js dist/
+          cp rpow_cli_miner/rpow-miner-worker.js dist/
+          cp rpow_cli_miner/index.js dist/
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
@@ -49,5 +54,7 @@ jobs:
           files: |
             dist/rpow-native-miner
             dist/rpow-cli.js
+            dist/rpow-miner-worker.js
+            dist/index.js
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
