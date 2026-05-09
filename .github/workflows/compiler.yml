@@ -41,7 +41,7 @@ jobs:
       - name: Prepare dist
         run: |
           mkdir -p dist
-          cp rpow_cli_miner/rpow-native-miner dist/rpow-native-miner
+          cp rpow_cli_miner/rpow-native-miner dist/
           cp rpow_cli_miner/rpow-cli.js dist/
           cp rpow_cli_miner/rpow-miner-worker.js dist/
           cp rpow_cli_miner/index.js dist/
