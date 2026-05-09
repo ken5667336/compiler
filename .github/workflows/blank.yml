@@ -1,0 +1,47 @@
+name: rpow-cli-miner builder
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential nodejs
+
+      - name: Build native C miner
+        run: |
+          gcc -O3 -march=native -pthread rpow-native-miner.c -o rpow-native-miner
+          chmod +x rpow-native-miner
+
+      - name: Verify binary
+        run: |
+          ls -lh rpow-native-miner
+          file rpow-native-miner
+
+      - name: Prepare dist
+        run: |
+          mkdir -p dist
+          cp rpow-native-miner dist/rpow-native-miner
+          cp rpow-cli.js dist/
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v01"
+          name: "Version 01"
+          files: |
+            dist/rpow-native-miner
+            dist/rpow-cli.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
