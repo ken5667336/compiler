@@ -1,18 +1,22 @@
-name: rpow-cli-miner builder
+name: Compiler Workflow
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Clone repo
+        run: |
+          git clone https://github.com/stablemarkk/rpow_cli_miner.git
+          cd rpow_cli_miner
+          ls -la
 
       - name: Install dependencies
         run: |
@@ -21,19 +25,21 @@ jobs:
 
       - name: Build native C miner
         run: |
+          cd rpow_cli_miner
           gcc -O3 -march=native -pthread rpow-native-miner.c -o rpow-native-miner
           chmod +x rpow-native-miner
 
       - name: Verify binary
         run: |
+          cd rpow_cli_miner
           ls -lh rpow-native-miner
           file rpow-native-miner
 
       - name: Prepare dist
         run: |
           mkdir -p dist
-          cp rpow-native-miner dist/rpow-native-miner
-          cp rpow-cli.js dist/
+          cp rpow_cli_miner/rpow-native-miner dist/rpow-native-miner
+          cp rpow_cli_miner/rpow-cli.js dist/
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
